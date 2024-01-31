@@ -53,8 +53,8 @@ herr_t h5iterate_t::iterate_link_cb(hid_t loc_id, const char *name, const H5L_in
   {
     H5O_info_t oinfo;
 
-    // get information about the object 
-    if(H5Oget_info_by_name(loc_id, name, &oinfo, H5P_DEFAULT) < 0)
+    // get information about the object
+    if(H5Oget_info_by_name(loc_id, name, &oinfo, H5O_INFO_ALL,H5P_DEFAULT) < 0)
     {
       return(H5_ITER_ERROR);
     }

@@ -532,7 +532,7 @@ static herr_t get_name_type_cb(hid_t loc_id, const char *name, const H5L_info_t 
   }
 
   ((name_type_t *)op_data)->type = stat_buf.type;
-  ((name_type_t *)op_data)->name = (char *)strdup(name);
+  ((name_type_t *)op_data)->name = (char *)_strdup(name);
 
   // define H5_ITER_STOP for return. This will cause the iterator to stop 
   return H5_ITER_STOP;
@@ -542,15 +542,16 @@ static herr_t get_name_type_cb(hid_t loc_id, const char *name, const H5L_info_t 
 //MainWindow::find_object
 //////////////////////////////////////////////////////////////////////////////////////
 
-H5O_info_added_t* MainWindow::find_object(haddr_t addr)
+H5O_info_added_t* MainWindow::find_object(H5O_token_t  addr)
 {
   for(size_t idx = 0; idx < m_visit.visit_info.size(); idx++)
   {
-    if(addr == m_visit.visit_info[idx].oinfo.addr)
+    if(addr.__data == m_visit.visit_info[idx].oinfo.token.__data)
     {
       return &(m_visit.visit_info[idx]);
     }
   }
+    // KHP
   return NULL;
 }
 
@@ -626,7 +627,7 @@ int MainWindow::iterate(const std::string& file_name, const std::string& grp_pat
       do_iterate = true;
 
       //get object info
-      if(H5Oget_info(gid, &oinfo_buf) < 0)
+      if(H5Oget_info(gid, &oinfo_buf, H5O_INFO_ALL) < 0)
       {
 
       }
@@ -642,9 +643,9 @@ int MainWindow::iterate(const std::string& file_name, const std::string& grp_pat
 
       if(oinfo_buf.rc > 1)
       {
-        H5O_info_added_t *oinfo_added = find_object(oinfo_buf.addr);
-
-        if(oinfo_added->added > 0)
+          H5O_info_added_t *oinfo_added =  find_object(oinfo_buf.token);
+// KHP
+        if( oinfo_added->added > 0)
         {
           //avoid infinite recursion due to a circular path in the file.
           do_iterate = false;
@@ -807,7 +808,7 @@ int MainWindow::get_attributes(const std::string& file_name, const std::string& 
   QTreeWidgetItem *item = NULL;
 
   //get object info
-  if(H5Oget_info(loc_id, &oinfo) < 0)
+  if(H5Oget_info(loc_id, &oinfo, H5O_INFO_ALL) < 0)
   {
 
   }
@@ -1090,7 +1091,7 @@ void FileTreeWidget::load_item_attribute(QTreeWidgetItem  *item)
   }
 
   //get object info
-  if(H5Oget_info_by_name(fid, path, &oinfo, H5P_DEFAULT) < 0)
+  if(H5Oget_info_by_name(fid, path, &oinfo,H5O_INFO_ALL, H5P_DEFAULT) < 0)
   {
 
   }
@@ -1414,13 +1415,15 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
     if(sizeof(float) == m_dataset->m_datatype_size)
     {
       float *buf_ = static_cast<float*> (m_dataset->m_buf);
-      str.sprintf("%g", buf_[idx_buf]);
+      str = QString().arg("%g", buf_[idx_buf]);
+      str="24";
       return str;
     }
     else if(sizeof(double) == m_dataset->m_datatype_size)
     {
       double *buf_ = static_cast<double*> (m_dataset->m_buf);
-      str.sprintf("%g", buf_[idx_buf]);
+      str= QString().arg("%g", buf_[idx_buf]);
+      str="12";
       return str;
     }
 #if H5_SIZEOF_LONG_DOUBLE !=0
@@ -1428,7 +1431,8 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
     {
       long double *buf_;
       buf_ = static_cast<long double*> (m_dataset->m_buf);
-      str.sprintf("%Lf", buf_[idx_buf]);
+      str= QString().arg("%Lf", buf_[idx_buf]);
+      str="13";
       return str;
     }
 #endif
@@ -1449,13 +1453,15 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
       if(H5T_SGN_NONE == m_dataset->m_datatype_sign)
       {
         unsigned char *buf_ = static_cast<unsigned char*> (m_dataset->m_buf);
-        str.sprintf("%u", buf_[idx_buf]);
+        str= QString().arg("%u", buf_[idx_buf]);
+        str="14";
         return str;
       }
       else
       {
         signed char *buf_ = static_cast<signed char*> (m_dataset->m_buf);
-        str.sprintf("%hhd", buf_[idx_buf]);
+        str= QString().arg("%hhd", buf_[idx_buf]);
+        str="15";
         return str;
       }
     }
@@ -1469,14 +1475,16 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
       if(H5T_SGN_NONE == m_dataset->m_datatype_sign)
       {
         unsigned short *buf_ = static_cast<unsigned short*> (m_dataset->m_buf);
-        str.sprintf("%u", buf_[idx_buf]);
+        str= QString().arg("%u", buf_[idx_buf]);
+        str="16";
         return str;
 
       }
       else
       {
         short *buf_ = static_cast<short*> (m_dataset->m_buf);
-        str.sprintf("%d", buf_[idx_buf]);
+        str= QString().arg("%d", buf_[idx_buf]);
+        str="17";
         return str;
 
       }
@@ -1492,14 +1500,16 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
       if(H5T_SGN_NONE == m_dataset->m_datatype_sign)
       {
         unsigned int* buf_ = static_cast<unsigned int*> (m_dataset->m_buf);
-        str.sprintf("%u", buf_[idx_buf]);
+        str= QString().arg("test %1", buf_[idx_buf]);
+        str="18";
         return str;
 
       }
       else
       {
         int* buf_ = static_cast<int*> (m_dataset->m_buf);
-        str.sprintf("%d", buf_[idx_buf]);
+          str=  QString("test %1").arg(buf_[idx_buf]);
+//        str="19";
         return str;
       }
     }
@@ -1514,14 +1524,16 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
       if(H5T_SGN_NONE == m_dataset->m_datatype_sign)
       {
         unsigned long* buf_ = static_cast<unsigned long*> (m_dataset->m_buf);
-        str.sprintf("%lu", buf_[idx_buf]);
+        str= QString().arg("%lu", buf_[idx_buf]);
+        str="20";
         return str;
 
       }
       else
       {
         long* buf_ = static_cast<long*> (m_dataset->m_buf);
-        str.sprintf("%ld", buf_[idx_buf]);
+        str= QString().arg("%ld", buf_[idx_buf]);
+        str="21";
         return str;
 
       }
@@ -1538,14 +1550,16 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
       if(H5T_SGN_NONE == m_dataset->m_datatype_sign)
       {
         unsigned long long* buf_ = static_cast<unsigned long long*> (m_dataset->m_buf);
-        str.sprintf("%llu", buf_[idx_buf]);
+        str= QString().arg("%llu", buf_[idx_buf]);
+        str="22";
         return str;
 
       }
       else
       {
         long long* buf_ = static_cast<long long*> (m_dataset->m_buf);
-        str.sprintf("%lld", buf_[idx_buf]);
+        str= QString().arg("%lld", buf_[idx_buf]);
+        str="23";
         return str;
 
       }
@@ -1612,6 +1626,7 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
     break;
 
   }; //switch
+  return QString("55");
 
 }
 
@@ -1676,7 +1691,7 @@ QMainWindow(parent),
 m_dataset(item_data->m_dataset)
 {
   QString str;
-  str.sprintf(" : %s", item_data->m_item_nm.c_str());
+  str= QString().arg(" : %s", item_data->m_item_nm.c_str());
   this->setWindowTitle(last_component(item_data->m_file_name.c_str()) + str);
 
   //currently selected layers for dimensions greater than two are the first layer
@@ -1747,7 +1762,7 @@ m_dataset(item_data->m_dataset)
 
     for(unsigned int idx = 0; idx < m_dataset->m_dim[idx_dmn]; idx++)
     {
-      str.sprintf("%u", idx + 1);
+      str= QString().arg("%u", idx + 1);
       list.append(str);
     }
 

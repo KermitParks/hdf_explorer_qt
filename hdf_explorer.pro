@@ -18,3 +18,15 @@ macx: {
  LIBS += -lcurl -lz
 }
 
+
+INCLUDEPATH += "C:/Program Files/HDF_Group/HDF5/1.14.3/include/"
+
+LIBS += "C:/Program Files/HDF_Group/HDF5/1.14.3/lib/hdf5.lib"
+LIBS += "C:/Program Files/HDF_Group/HDF5/1.14.3/lib/hdf5_cpp.lib"
+LIBS += "C:/Program Files/HDF_Group/HDF5/1.14.3/lib/hdf5_hl.lib"
+LIBS += "C:/Program Files/HDF_Group/HDF5/1.14.3/lib/hdf5_hl_cpp.lib"
+LIBS += "C:/Program Files/HDF_Group/HDF5/1.14.3/lib/hdf5_java.lib"
+LIBS += "C:/Program Files/HDF_Group/HDF5/1.14.3/lib/hdf5_tools.lib"
+LIBS += "C:/Program Files/HDF_Group/HDF5/1.14.3/lib/libszaec.lib"
+LIBS += "C:/Program Files/HDF_Group/HDF5/1.14.3/lib/libzlib.lib"
+

@@ -121,8 +121,8 @@ private:
   int iterate(const std::string& file_name, const std::string& grp_name, const hid_t loc_id, QTreeWidgetItem *tree_item_parent);
   int get_attributes(const std::string& file_name, const std::string& grp_name, const hid_t loc_id, QTreeWidgetItem *tree_item_parent);
 
-  //find object in list 
-  H5O_info_added_t* find_object(haddr_t addr);
+  //find object in list
+  H5O_info_added_t* find_object(H5O_token_t addr);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
