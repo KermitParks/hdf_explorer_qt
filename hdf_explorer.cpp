@@ -11,6 +11,7 @@
 #include <cassert>
 #include <vector>
 #include <algorithm>
+#include <sstream>
 #include "hdf_explorer.hpp"
 
 static const char app_name[] = "HDF Explorer";
@@ -1415,15 +1416,13 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
     if(sizeof(float) == m_dataset->m_datatype_size)
     {
       float *buf_ = static_cast<float*> (m_dataset->m_buf);
-      str = QString().arg("%g", buf_[idx_buf]);
-      str="24";
+      str= QString::number(buf_[idx_buf]);
       return str;
     }
     else if(sizeof(double) == m_dataset->m_datatype_size)
     {
       double *buf_ = static_cast<double*> (m_dataset->m_buf);
-      str= QString().arg("%g", buf_[idx_buf]);
-      str="12";
+      str= QString::number(buf_[idx_buf]);
       return str;
     }
 #if H5_SIZEOF_LONG_DOUBLE !=0
@@ -1432,8 +1431,10 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
       long double *buf_;
       buf_ = static_cast<long double*> (m_dataset->m_buf);
       str= QString().arg("%Lf", buf_[idx_buf]);
-      str="13";
-      return str;
+      long double val = buf_[idx_buf];
+      std::stringstream ss;
+      ss << val;
+      return QString::fromStdString(ss.str());
     }
 #endif
     break;
@@ -1453,15 +1454,13 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
       if(H5T_SGN_NONE == m_dataset->m_datatype_sign)
       {
         unsigned char *buf_ = static_cast<unsigned char*> (m_dataset->m_buf);
-        str= QString().arg("%u", buf_[idx_buf]);
-        str="14";
+        str= QString("%1").arg(buf_[idx_buf]);
         return str;
       }
       else
       {
         signed char *buf_ = static_cast<signed char*> (m_dataset->m_buf);
-        str= QString().arg("%hhd", buf_[idx_buf]);
-        str="15";
+        str= QString("%1").arg(buf_[idx_buf]);
         return str;
       }
     }
@@ -1475,18 +1474,14 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
       if(H5T_SGN_NONE == m_dataset->m_datatype_sign)
       {
         unsigned short *buf_ = static_cast<unsigned short*> (m_dataset->m_buf);
-        str= QString().arg("%u", buf_[idx_buf]);
-        str="16";
+          str= QString("%1").arg(buf_[idx_buf]);
         return str;
-
       }
       else
       {
         short *buf_ = static_cast<short*> (m_dataset->m_buf);
-        str= QString().arg("%d", buf_[idx_buf]);
-        str="17";
+        str= QString("%1").arg(buf_[idx_buf]);
         return str;
-
       }
 
     }
@@ -1500,16 +1495,13 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
       if(H5T_SGN_NONE == m_dataset->m_datatype_sign)
       {
         unsigned int* buf_ = static_cast<unsigned int*> (m_dataset->m_buf);
-        str= QString().arg("test %1", buf_[idx_buf]);
-        str="18";
+        str= QString("%1").arg(buf_[idx_buf]);
         return str;
-
       }
       else
       {
         int* buf_ = static_cast<int*> (m_dataset->m_buf);
-          str=  QString("test %1").arg(buf_[idx_buf]);
-//        str="19";
+        str=  QString("%1").arg(buf_[idx_buf]);
         return str;
       }
     }
@@ -1524,17 +1516,14 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
       if(H5T_SGN_NONE == m_dataset->m_datatype_sign)
       {
         unsigned long* buf_ = static_cast<unsigned long*> (m_dataset->m_buf);
-        str= QString().arg("%lu", buf_[idx_buf]);
-        str="20";
+          str= QString::number(buf_[idx_buf]);
         return str;
-
       }
       else
       {
         long* buf_ = static_cast<long*> (m_dataset->m_buf);
-        str= QString().arg("%ld", buf_[idx_buf]);
-        str="21";
-        return str;
+        str= QString::number(buf_[idx_buf]);
+       return str;
 
       }
 
@@ -1550,16 +1539,13 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
       if(H5T_SGN_NONE == m_dataset->m_datatype_sign)
       {
         unsigned long long* buf_ = static_cast<unsigned long long*> (m_dataset->m_buf);
-        str= QString().arg("%llu", buf_[idx_buf]);
-        str="22";
+        str= QString::number(buf_[idx_buf]);
         return str;
-
       }
       else
       {
         long long* buf_ = static_cast<long long*> (m_dataset->m_buf);
-        str= QString().arg("%lld", buf_[idx_buf]);
-        str="23";
+        str= QString::number(buf_[idx_buf]);
         return str;
 
       }
@@ -1626,7 +1612,7 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
     break;
 
   }; //switch
-  return QString("55");
+  return QString("");
 
 }
 
