@@ -1,4 +1,5 @@
 TARGET = "hdf-explorer"
+QMAKE_MACOSX_DEPLOYMENT_TARGET = 11.7
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 HEADERS = hdf_explorer.hpp visit.hpp iterate.hpp
 SOURCES = hdf_explorer.cpp visit.cpp iterate.cpp
@@ -12,21 +13,28 @@ unix:!macx {
 
 macx: {
  INCLUDEPATH += /usr/local/include
+ LIBS += /usr/local/lib/libhdf5_tools.a
+ LIBS += /usr/local/lib/libhdf5_fortran.a
  LIBS += /usr/local/lib/libhdf5.a
  LIBS += /usr/local/lib/libhdf5_hl.a
- LIBS += /usr/local/lib/libsz.a
+ LIBS += /usr/local/lib/libhdf5_cpp.a
+ LIBS += /usr/local/lib/libhdf5_hl_cpp.a
+ LIBS += /usr/local/lib/libzlib.a
+ LIBS += /usr/local/lib/libszaec.a
+ LIBS += /usr/local/lib/libaec.a
  LIBS += -lcurl -lz
 }
 
 
-INCLUDEPATH += "C:/Program Files/HDF_Group/HDF5/1.14.3/include/"
+win32: {
+    INCLUDEPATH += "C:/Program Files/HDF_Group/HDF5/1.14.3/include/"
 
-LIBS += "C:/Program Files/HDF_Group/HDF5/1.14.3/lib/hdf5.lib"
-LIBS += "C:/Program Files/HDF_Group/HDF5/1.14.3/lib/hdf5_cpp.lib"
-LIBS += "C:/Program Files/HDF_Group/HDF5/1.14.3/lib/hdf5_hl.lib"
-LIBS += "C:/Program Files/HDF_Group/HDF5/1.14.3/lib/hdf5_hl_cpp.lib"
-LIBS += "C:/Program Files/HDF_Group/HDF5/1.14.3/lib/hdf5_java.lib"
-LIBS += "C:/Program Files/HDF_Group/HDF5/1.14.3/lib/hdf5_tools.lib"
-LIBS += "C:/Program Files/HDF_Group/HDF5/1.14.3/lib/libszaec.lib"
-LIBS += "C:/Program Files/HDF_Group/HDF5/1.14.3/lib/libzlib.lib"
-
+    LIBS += "C:/Program Files/HDF_Group/HDF5/1.14.3/lib/hdf5.lib"
+    LIBS += "C:/Program Files/HDF_Group/HDF5/1.14.3/lib/hdf5_cpp.lib"
+    LIBS += "C:/Program Files/HDF_Group/HDF5/1.14.3/lib/hdf5_hl.lib"
+    LIBS += "C:/Program Files/HDF_Group/HDF5/1.14.3/lib/hdf5_hl_cpp.lib"
+    LIBS += "C:/Program Files/HDF_Group/HDF5/1.14.3/lib/hdf5_java.lib"
+    LIBS += "C:/Program Files/HDF_Group/HDF5/1.14.3/lib/hdf5_tools.lib"
+    LIBS += "C:/Program Files/HDF_Group/HDF5/1.14.3/lib/libszaec.lib"
+    LIBS += "C:/Program Files/HDF_Group/HDF5/1.14.3/lib/libzlib.lib"
+}
