@@ -533,7 +533,7 @@ static herr_t get_name_type_cb(hid_t loc_id, const char *name, const H5L_info_t 
   }
 
   ((name_type_t *)op_data)->type = stat_buf.type;
-  ((name_type_t *)op_data)->name = (char *)_strdup(name);
+  ((name_type_t *)op_data)->name = (char *)strdup(name);
 
   // define H5_ITER_STOP for return. This will cause the iterator to stop 
   return H5_ITER_STOP;
@@ -1436,6 +1436,7 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
       ss << val;
       return QString::fromStdString(ss.str());
     }
+
 #endif
     break;
 
